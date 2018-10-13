@@ -28,6 +28,7 @@ app.use(jsonParser)
 
 app.post('/signin', (req, res) => {
   const [_username, _password] = [req.body.username, req.body.password]
+  console.log(req.body)
   User.authenticateAccount(_username, _password)
     .then(result => {
       res.send({token: result})

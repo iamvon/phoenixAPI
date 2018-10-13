@@ -9,10 +9,8 @@ module.exports = {
         username: _username,
         password: _password
       }}, {raw: true})
-      if (user != undefined)      
-        return Promise.resolve(user.userId)
-      else 
-        return null
+      if (user = undefined) return Promise.reject(new Error('Invalid username or password'))
+      return Promise.resolve(user.userId)              
     } catch (error) {
       return Promise.reject(error)
     }
