@@ -66,5 +66,22 @@ module.exports = {
     updatedAt:      Sequelize.DATE
   }, {
     timestamps: true
+  }),
+
+  Transaction: sequelize.define('Transaction', {
+    transactionId: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    senderId:       Sequelize.INTEGER,
+    recepientId:    Sequelize.INTEGER,
+    transactionType:Sequelize.STRING,
+    PointID:        Sequelize.INTEGER(11),
+    amount:         Sequelize.INTEGER,
+    createdAt:      Sequelize.DATE,
+    updatedAt:      Sequelize.DATE
+  }, {
+    timestamps: true
   })
 }

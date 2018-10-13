@@ -48,6 +48,16 @@ module.exports = {
     }
   },
   
+  getById: async function(userId) {
+    try {
+      let user = await User.findById(userId, {raw:true})            
+      if (user == undefined) return Promise.reject(new Error('Invalid userId'))
+      return Promise.resolve(user)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  },
+
   getInfo: async function(userId) {
     try {
       let user = await User.findById(userId, {raw:true})            

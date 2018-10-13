@@ -6,6 +6,7 @@ const app         = express();
 const User        = require('./model/user')
 const Customer    = require('./model/customer')
 const Shop        = require('./model/shop')
+const Transaction = require('./model/transaction')
 
 // Setting CORS
 app.use((req, res, next) => {   // hỗ trợ nhận request post/get chứa cookie dạng json từ client
@@ -21,15 +22,21 @@ app.use(express.static('data'));
 
 app.use(jsonParser)
 
+// Template for sending response
+var sendJSONresponse = function(response, _status, _content) {  
+  response.status(_status)
+  response.json(_content)
+}
+
 /* Testing */
-app.post('/test', (req, res) => {
-  Customer.getWallet(10)
-    .then(result => {
-      res.status(200)
-      res.json(result)
-      res.end()
-    })
-})
+// app.post('/test', (req, res) => {
+//   Customer.getWallet(10)
+//     .then(result => {
+//       res.status(200)
+//       res.json(result)
+//       res.end()
+//     })
+// })
 
 /* Routing */
 
@@ -40,7 +47,7 @@ app.post('/signin', (req, res) => {
   User.authenticateAccount(_username, _password)
     .then(result => {
       console.log('Signin Successfully ' + result)
-      res.json(result)
+      // res.json(result)
     })
     .catch(error => {
       res.status(404)
@@ -76,8 +83,8 @@ app.get('/user/:id', (req, res) => {
     })
 }) 
 
-/*  
-  Customer cashes out his/her point to voucher of a shop
+/**
+ *  Customer cashes out his/her point to voucher of a shop 
  */
 app.post('/customer/:customerId/shop/:shopId/voucher', (req, res) => {
   Customer.cashOut(req.params.customerId, req.params.shopId)
@@ -90,9 +97,9 @@ app.post('/customer/:customerId/shop/:shopId/voucher', (req, res) => {
     })
 })
 
-/*
-  Customer uses a voucher. Need to import code of voucher to verify.
-*/
+/**
+ *  Customer uses a voucher. Need to import code of voucher to verify. 
+ */
 app.put('/customer/:customerId/voucher', (req, res) => {
   const code = req.body.code
   Customer.useVoucher(req.params.customerId, code)
@@ -105,9 +112,9 @@ app.put('/customer/:customerId/voucher', (req, res) => {
     })
 })
 
-/*
-  Customer gets all of his/her vouchers
-*/
+/**
+ *  Customer gets all of his/her vouchers 
+ */
 app.get('/customer/:customerId/voucher', (req, res) => {
   Customer.getOwningVoucher(req.params.customerId)
     .then(result => {
@@ -119,24 +126,43 @@ app.get('/customer/:customerId/voucher', (req, res) => {
     })
 })
 
-/*
-  Shop                                                                                                                                                                          changes its discount amount
-*/
+/**
+ * Customer get his/her transaction history 
+ */
+app.get('/user/:userId/transaction', (req, res) => {
+  const condition = {$or:[{senderId: req.params.userId}, {recepientId: req.params.userId}]}
+  Transaction.getAllCondition(condition)
+    .then(result => sendJSONresponse(res, 200, result))
+    .catch(error => sendJSONresponse(res, 404, {error: error}))
+})
+
+/**
+ *  Shop changes its discount amount and pointNeed 
+ */
 app.put('/shop/:shopId/discount', (req, res) => {
   const _discount = req.body.discount
-  Shop.setDiscount(req.params.shopId, _discount) 
+  const _pointNeed = req.body.pointNeed
+  Shop.updateDiscount(req.params.shopId, _discount, _pointNeed) 
     .then(result => {
-      console.log('Set discount Successfully ' + result)
-      res.send({result: result})
+      console.log('Update discount Successfully')
+      sendJSONresponse(res, 200, result)      
     })
     .catch(error => {
-      res.sendStatus(404)
-      console.log(error.message)
+      sendJSONresponse(res, 404, {error: error.message})
     })
 })
 
-app.post('/transaction', (req, res) => {
-
+/* 
+  Upload a transaction of any type on database 
+*/
+app.post('/transaction', (req, res) => {    
+  Transaction.upload(req.body.senderId, req.body.recepientId, req.body.PointID, req.body.amount)  
+    .then(result => {            
+      sendJSONresponse(res, 200, result)
+    })
+    .catch(error => {
+      sendJSONresponse(res, 404, {error: error.message})
+    })  
 })
 
 // PORT: listen on port 3000 unless there exists a preconfigured port

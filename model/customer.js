@@ -42,8 +42,7 @@ module.exports = {
       if (voucher == undefined || voucher.status != 'available')
         return Promise.reject(new Error('Invalid Voucher Code'))
       
-      await voucher.update({status: 'used'})
-      // return Promise.resolve(voucher)
+      await voucher.update({status: 'used'})      
       return Promise.resolve('success')
     } catch (error) {
       return Promise.reject(new Error(error))
