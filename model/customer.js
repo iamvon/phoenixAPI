@@ -31,13 +31,23 @@ module.exports = {
       let voucher = await Voucher.findOneCondition(_condition)
       
       if (voucher == undefined || voucher.status != 'available')
-        return Promise.resolve('Invalid Voucher Code')
+        return Promise.reject(new Error('Invalid Voucher Code'))
 
       await voucher.update({status: 'used'})
       // return Promise.resolve(voucher)
       return Promise.resolve('success')
     } catch (error) {
       return Promise.reject(new Error(error))
+    }
+  },
+
+  getOwningVoucher: async function(userId) {
+    try {
+      const _condition = {ownerId: userId}
+      const result = await Voucher.findAllCondition(_condition)
+      return Promise.resolve(result)
+    } catch (error) {
+      return Promise.reject(error)   
     }
   }
 }

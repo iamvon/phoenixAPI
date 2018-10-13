@@ -23,5 +23,14 @@ module.exports = {
     } catch (error) {
       return Promise.reject(error)
     }
+  },
+
+  findAllCondition: async function(_condition) {
+    try {
+      const vouchers = await Voucher.findAll({where: _condition},{raw: true})
+      return Promise.resolve(vouchers)
+    } catch (error) {
+      return Promise.reject(error)
+    }
   }
 }

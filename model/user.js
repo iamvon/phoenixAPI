@@ -9,11 +9,16 @@ module.exports = {
         username: _username,
         password: _password
       }}, {raw: true})
-      if (user = undefined) return Promise.reject(new Error('Invalid username or password'))
-      return Promise.resolve(user.userId)              
+      if (user == undefined) return Promise.reject(new Error('Invalid username or password'))
+      const info = await this.getInfo(user.userId)
+
+      return Promise.resolve({
+        token: user.userId,
+        info: info
+      })
     } catch (error) {
       return Promise.reject(error)
-    }
+    }    
   },
 
   insertNewUser: async function(_username, _password, _userType) {    
