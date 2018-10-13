@@ -22,6 +22,14 @@ app.use(express.static('data'));
 app.use(jsonParser)
 
 /* Testing */
+app.post('/test', (req, res) => {
+  Customer.getWallet(10)
+    .then(result => {
+      res.status(200)
+      res.json(result)
+      res.end()
+    })
+})
 
 /* Routing */
 
@@ -72,13 +80,13 @@ app.get('/user/:id', (req, res) => {
   Customer cashes out his/her point to voucher of a shop
  */
 app.post('/customer/:customerId/shop/:shopId/voucher', (req, res) => {
-  Customer.createVoucher(req.params.customerId, req.params.shopId)
+  Customer.cashOut(req.params.customerId, req.params.shopId)
     .then(result => {
       res.send({result: result})
     })
     .catch(error => {
-      res.sendStatus(404)
-      console.log(error.message)
+      res.status(404)
+      res.send({error: error.message})      
     })
 })
 
@@ -112,7 +120,7 @@ app.get('/customer/:customerId/voucher', (req, res) => {
 })
 
 /*
-  Shop changes its discount amount
+  Shop                                                                                                                                                                          changes its discount amount
 */
 app.put('/shop/:shopId/discount', (req, res) => {
   const _discount = req.body.discount

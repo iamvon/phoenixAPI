@@ -46,7 +46,9 @@ module.exports = {
     name:           Sequelize.STRING,
     location:       Sequelize.STRING,
     discount:       Sequelize.INTEGER(11),
-    PointID:        Sequelize.INTEGER(11)   
+    PointID:        Sequelize.INTEGER(11),
+    pointNeedToCashout:
+                    Sequelize.INTEGER
   }),  
 
   Voucher: sequelize.define('Voucher', {
