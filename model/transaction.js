@@ -18,6 +18,11 @@ module.exports = {
   },
 
   upload: async function(_senderId, _recepientId, _PointID, _amount) {
+    // console.log(_senderId)    
+    // console.log(_recepientId)
+    // console.log(_PointID)
+    // console.log(_amount)
+    
     if (_PointID == undefined || _amount == undefined)
       return Promise.reject(new Error('Invalid PointID or Not specific amount of point'))
 
@@ -39,7 +44,7 @@ module.exports = {
       
       // check if sernder has enough point
       await this.verify(sender, _PointID, _amount)
-
+      console.log('ahihi')
       const transaction = await Transaction.create({
         senderId:         _senderId,
         recepientId:      _recepientId,

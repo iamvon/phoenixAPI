@@ -1,6 +1,9 @@
-const User      = require('../database').User
-const Customer  = require('./customer')
-const Shop      = require('./shop')
+const User        = require('../database').User
+const Shop        = require('../database').Shop
+const Customer    = require('../database').Customer
+
+// const Customer  = require('./customer')
+// const Shop      = require('./shop')
 
 module.exports = {
   authenticateAccount: async function(_username, _password) {
@@ -21,8 +24,7 @@ module.exports = {
     }    
   },
 
-  insertNewUser: async function(_username, _password, _userType) {    
-    // console.log(_userType)
+  insertNewUser: async function(_username, _password, _userType) {        
     if (_userType != 'Shop' && _userType != 'Customer')
       return Promise.reject(new Error('UserType is not allowed'))
 
@@ -38,9 +40,9 @@ module.exports = {
       }, {raw: true})
       
       if (_userType == 'Shop') 
-        Shop.insert(newUser.userId)
+        Shop.create({shopId: newUser.userId})        
       else        
-        Customer.insert(newUser.userId)
+        Customer.create({customerId: newUser.userId})        
 
       return Promise.resolve(newUser.userId)
     } catch (error) {
@@ -48,9 +50,9 @@ module.exports = {
     }
   },
   
-  getById: async function(userId) {
-    try {
-      let user = await User.findById(userId, {raw:true})            
+  getById: async function(_userId) {            
+    try {      
+      var user = await User.findById(_userId, {raw:true})                  
       if (user == undefined) return Promise.reject(new Error('Invalid userId'))
       return Promise.resolve(user)
     } catch (error) {
@@ -58,11 +60,14 @@ module.exports = {
     }
   },
 
-  getInfo: async function(userId) {
+  getInfo: async function(_userId) {    
     try {
-      let user = await User.findById(userId, {raw:true})            
-      let info = (user.userType == 'Shop') ? await Shop.getInfo(userId) 
-                                            : await Customer.getInfo(userId)      
+      let user = await User.findById(_userId, {raw:true})            
+      let info = {}
+      if (user.userType == 'Shop')
+        info = Shop.findById(_userId, {raw: true})
+      else 
+        info = Customer.findById(_userId, {raw: true})
       for (var key in info) user[key] = info[key]
       return Promise.resolve(user)
     } catch (error) {

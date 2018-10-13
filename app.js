@@ -29,30 +29,24 @@ var sendJSONresponse = function(response, _status, _content) {
 }
 
 /* Testing */
-// app.post('/test', (req, res) => {
-//   Customer.getWallet(10)
-//     .then(result => {
-//       res.status(200)
-//       res.json(result)
-//       res.end()
-//     })
-// })
+app.get('/test/:shopId', (req, res) => {        
+  Shop.getPoint(req.params.shopId)
+    .then(result => sendJSONresponse(res, 200, result))
+    .catch(error => sendJSONresponse(res, 404, {error: error.message}))
+})
 
 /* Routing */
 
 app.post('/signin', (req, res) => {
   const [_username, _password] = [req.body.username, req.body.password]
-  console.log(req)
-  console.log(req.body)
   User.authenticateAccount(_username, _password)
     .then(result => {
       console.log('Signin Successfully ' + result)
-      // res.json(result)
+      sendJSONresponse(res, 200, result)
     })
     .catch(error => {
       res.status(404)
-      res.send({error: error.message})      
-      console.log(error.message)
+      res.send({error: error.message})            
     })  
 })
 
@@ -69,8 +63,8 @@ app.post('/register', (req, res) => {
     })
 })
 
-/*  
-  Get infomation of a particular user irrespective Customer or Shop
+/**  
+ * Get infomation of a particular user irrespective Customer or Shop
  */
 app.get('/user/:id', (req, res) => {  
   User.getInfo(req.params.id)
@@ -84,7 +78,7 @@ app.get('/user/:id', (req, res) => {
 }) 
 
 /**
- *  Customer cashes out his/her point to voucher of a shop 
+ * Customer cashes out his/her point to voucher of a shop 
  */
 app.post('/customer/:customerId/shop/:shopId/voucher', (req, res) => {
   Customer.cashOut(req.params.customerId, req.params.shopId)
@@ -98,7 +92,7 @@ app.post('/customer/:customerId/shop/:shopId/voucher', (req, res) => {
 })
 
 /**
- *  Customer uses a voucher. Need to import code of voucher to verify. 
+ * Customer uses a voucher. Need to import code of voucher to verify. 
  */
 app.put('/customer/:customerId/voucher', (req, res) => {
   const code = req.body.code
@@ -113,7 +107,7 @@ app.put('/customer/:customerId/voucher', (req, res) => {
 })
 
 /**
- *  Customer gets all of his/her vouchers 
+ * Customer gets all of his/her vouchers 
  */
 app.get('/customer/:customerId/voucher', (req, res) => {
   Customer.getOwningVoucher(req.params.customerId)
@@ -127,6 +121,16 @@ app.get('/customer/:customerId/voucher', (req, res) => {
 })
 
 /**
+ * Customer get all of voucher he/she can cash out
+ */
+
+app.get('/customer/:customerId/potentialVoucher', (req, res) => {
+  Customer.getPotentialVoucher(req.params.customerId)
+    .then(result => sendJSONresponse(res, 200, result))
+    .catch(error => sendJSONresponse(res, 404, {error: error.message}))
+}) 
+
+/**
  * Customer get his/her transaction history 
  */
 app.get('/user/:userId/transaction', (req, res) => {
@@ -137,7 +141,23 @@ app.get('/user/:userId/transaction', (req, res) => {
 })
 
 /**
- *  Shop changes its discount amount and pointNeed 
+ * Shop rewards Point to Customer
+ */
+async function reward(_shopId, _customerId) {
+  const transaction = await Shop.rewardPoint(_shopId, _customerId)
+  const result = await Transaction.upload(transaction.senderId, transaction.recepientId, transaction.PointID, transaction.amount)                
+  console.log('ahihi ' + result)
+  return Promise.resolve(result)
+}
+
+app.post('/shop/:shopId/customer/:customerId/reward', (req, res) => {
+  reward(req.params.shopId, req.params.customerId)  
+    .then(result => sendJSONresponse(res, 200, result))
+    .catch(error => sendJSONresponse(res, 404, {error: error.message}))
+})
+
+/**
+ * Shop changes its discount amount and pointNeed 
  */
 app.put('/shop/:shopId/discount', (req, res) => {
   const _discount = req.body.discount
@@ -152,9 +172,10 @@ app.put('/shop/:shopId/discount', (req, res) => {
     })
 })
 
-/* 
-  Upload a transaction of any type on database 
-*/
+/**
+ * Upload a transaction of any type on database  
+ */
+
 app.post('/transaction', (req, res) => {    
   Transaction.upload(req.body.senderId, req.body.recepientId, req.body.PointID, req.body.amount)  
     .then(result => {            

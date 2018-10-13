@@ -24,6 +24,7 @@ module.exports = {
     phone:          Sequelize.STRING,
     userType:       Sequelize.STRING,
     PublicAddress:  Sequelize.STRING,
+    PrivateKey:     Sequelize.STRING,
     Avatar:         Sequelize.STRING
   }),
 
@@ -45,6 +46,7 @@ module.exports = {
     },
     name:           Sequelize.STRING,
     location:       Sequelize.STRING,
+    reward:         Sequelize.INTEGER,
     discount:       Sequelize.INTEGER(11),
     PointID:        Sequelize.INTEGER(11),
     pointNeedToCashout:
