@@ -85,5 +85,24 @@ module.exports = {
     updatedAt:      Sequelize.DATE
   }, {
     timestamps: true
-  })
+  }),
+
+  Exchange: sequelize.define('Exchange', {
+    exchangeId: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    publisherId:          Sequelize.INTEGER,
+    traderId:             Sequelize.INTEGER,
+    availablePointID:     Sequelize.INTEGER,
+    availablePointAmount: Sequelize.INTEGER,
+    wantingPointID:       Sequelize.INTEGER,
+    wantingPointAmount:   Sequelize.INTEGER,
+    isApproved:           Sequelize.TINYINT,
+    createdAt:            Sequelize.DATE,
+    updatedAt:            Sequelize.DATE
+  }, {
+    timestamps: true
+  }),
 }

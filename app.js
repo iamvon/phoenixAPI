@@ -7,6 +7,7 @@ const User        = require('./model/user')
 const Customer    = require('./model/customer')
 const Shop        = require('./model/shop')
 const Transaction = require('./model/transaction')
+const Exchange    = require('./model/exchange')
 
 // Setting CORS
 app.use((req, res, next) => {   // hỗ trợ nhận request post/get chứa cookie dạng json từ client
@@ -38,7 +39,7 @@ app.get('/test/:shopId', (req, res) => {
 /* Routing */
 
 app.post('/signin', (req, res) => {
-  const [_username, _password] = [req.body.username, req.body.password]
+  const [_username, _password] = [req.body.username, req.body.password]  
   User.authenticateAccount(_username, _password)
     .then(result => {
       console.log('Signin Successfully ' + result)
@@ -121,9 +122,17 @@ app.get('/customer/:customerId/voucher', (req, res) => {
 })
 
 /**
+ * Get all kind of voucher
+ */
+app.get('/voucher', (req, res) => {
+  Shop.getAllCondition({})
+    .then(result => sendJSONresponse(res, 200, result))
+    .catch(error => sendJSONresponse(res, 404, error))
+})
+
+/**
  * Customer get all of voucher he/she can cash out
  */
-
 app.get('/customer/:customerId/potentialVoucher', (req, res) => {
   Customer.getPotentialVoucher(req.params.customerId)
     .then(result => sendJSONresponse(res, 200, result))
@@ -141,12 +150,53 @@ app.get('/user/:userId/transaction', (req, res) => {
 })
 
 /**
+ * Customer' s Wallet
+ */
+app.get('/customer/:customerId/wallet', (req, res) => {
+  Customer.getWallet(req.params.customerId)
+    .then(result => sendJSONresponse(res, 200, result))
+    .catch(error => sendJSONresponse(res, 404, {error: error.message}))
+})
+
+/**
+ * Customer proposing exchange
+ */
+app.post('/customer/:customerId/exchange', (req, res) => {
+  Customer.proposeExchange(
+    req.params.customerId,
+    req.body.availablePointID,
+    req.body.availablePointAmount,
+    req.body.wantingPointID,
+    req.body.wantingPointAmount)
+    .then(result => sendJSONresponse(res, 200, result))
+    .catch(error => sendJSONresponse(res, 404, {error: error.message}))
+})
+
+/**
+ * Customer approve an exchange
+ */
+app.put('/customer/:customerId/exchange/:exchangeId', (req, res) => {
+  Customer.approveExchange(req.params.customerId, req.params.exchangeId)
+    .then(result => sendJSONresponse(res, 200, result))
+    .catch(error => sendJSONresponse(res, 404, {error: error.message}))
+})
+
+/**
+ * Search all exchange requirement
+ */
+app.get('/exchange', (req, res) => {
+  Exchange.getAllCondition({isApproved: 0})
+    .then(result => sendJSONresponse(res, 200, result))
+    .catch(error => sendJSONresponse(res, 404, {error: error.message}))
+})
+/**
  * Shop rewards Point to Customer
  */
 async function reward(_shopId, _customerId) {
   const transaction = await Shop.rewardPoint(_shopId, _customerId)
+  // console.log(transaction)
   const result = await Transaction.upload(transaction.senderId, transaction.recepientId, transaction.PointID, transaction.amount)                
-  console.log('ahihi ' + result)
+  // console.log('ahihi ' + result)
   return Promise.resolve(result)
 }
 
@@ -175,7 +225,6 @@ app.put('/shop/:shopId/discount', (req, res) => {
 /**
  * Upload a transaction of any type on database  
  */
-
 app.post('/transaction', (req, res) => {    
   Transaction.upload(req.body.senderId, req.body.recepientId, req.body.PointID, req.body.amount)  
     .then(result => {            

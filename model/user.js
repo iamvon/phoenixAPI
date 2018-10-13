@@ -65,9 +65,9 @@ module.exports = {
       let user = await User.findById(_userId, {raw:true})            
       let info = {}
       if (user.userType == 'Shop')
-        info = Shop.findById(_userId, {raw: true})
+        info = await Shop.findById(_userId, {raw: true})
       else 
-        info = Customer.findById(_userId, {raw: true})
+        info = await Customer.findById(_userId, {raw: true})      
       for (var key in info) user[key] = info[key]
       return Promise.resolve(user)
     } catch (error) {
