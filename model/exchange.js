@@ -1,4 +1,5 @@
-const Exchange = require('../database').Exchange
+const Exchange  = require('../database').Exchange
+const Point     = require('./Point')
 
 module.exports = {
   insert: async function (_publisherId, _aPID, _aPamt, _wPID, _wPamt) {
@@ -25,6 +26,11 @@ module.exports = {
   },
 
   getAllCondition: async function(_condition) {
-    return Exchange.findAll({where: _condition, raw: true})
+    let exchanges = await Exchange.findAll({where: _condition, raw: true})
+    for (let e of exchanges) {
+      e.availablePointName = await Point.getName(e.availablePointID)
+      e.wantingPointName = await Point.getName(e.wantingPointID)
+    }
+    return exchanges
   }
 }

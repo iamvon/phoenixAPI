@@ -1,6 +1,7 @@
 const User        = require('./user')
 const Shop        = require('../database').Shop
 const ShopSMI     = require('../smart-contract/shopInfinito')
+const Point       = require('./Point')
 
 module.exports = {
   insert: async function(id) {
@@ -12,7 +13,14 @@ module.exports = {
   },
 
   getAllCondition: async function(_condition) {
-    return Shop.findAll({where: _condition, raw: true})
+    let shops = await Shop.findAll({where: _condition, raw: true})
+    console.log(shops)
+    for (let s of shops) {
+      const ss = await this.getInfo(s.shopId)
+      s['PointName'] = await Point.getName(ss.PointID)
+    }
+    console.log(shops)
+    return Promise.resolve(shops)
   },
 
   updateDiscount: async function(_shopId, _discount, _pointNeed) {

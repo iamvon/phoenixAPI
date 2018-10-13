@@ -1,6 +1,7 @@
 const Voucher       = require('../database').Voucher
 const randomstring  = require('randomstring') 
 const Shop          = require('./shop')
+const Point         = require('./Point')
 
 module.exports = {
   create: async function(_ownerId, _shopId, _discount) {    
@@ -19,8 +20,11 @@ module.exports = {
 
   findOneCondition: async function(_condition) {
     try {
-      const voucher = await Voucher.findOne({where: _condition},{raw: true})
-      return Promise.resolve(voucher)
+      let vouchers = await Voucher.findOne({where: _condition})
+      for (let v of vouchers) {                        
+        v.dataValues['PointName'] = await Point.getName(v.dataValues.PointID)
+      }
+      return Promise.resolve(vouchers)
     } catch (error) {
       return Promise.reject(error)
     }
@@ -28,11 +32,12 @@ module.exports = {
 
   findAllCondition: async function(_condition) {
     try {
-      let vouchers = await Voucher.findAll({where: _condition},{raw: true})
-      for (let v of vouchers) {        
-        const shop = await Shop.getInfo(v.dataValues.shopId)
-        v.dataValues['shopName'] = shop.name        
-      }
+      let vouchers = await Voucher.findAll({where: _condition, raw: true})           
+      for (let v of vouchers) {                
+        const shop = await Shop.getInfo(v.shopId)
+        v['shopName'] = shop.name        
+        v['PointName'] = await Point.getName(shop.PointID)
+      }      
       return Promise.resolve(vouchers)
     } catch (error) {
       return Promise.reject(error)

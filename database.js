@@ -105,4 +105,11 @@ module.exports = {
   }, {
     timestamps: true
   }),
+  Point: sequelize.define('Point', {
+    PointID: {
+      type:               Sequelize.INTEGER,
+      primaryKey:         true
+    },
+    name:                 Sequelize.STRING
+  })
 }

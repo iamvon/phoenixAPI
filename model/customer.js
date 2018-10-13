@@ -56,7 +56,7 @@ module.exports = {
   getOwningVoucher: async function(userId) {
     try {      
       const _condition = {ownerId: userId}
-      const result = await Voucher.findAllCondition(_condition)      
+      let result = await Voucher.findAllCondition(_condition)       
       return Promise.resolve(result)
     } catch (error) {
       return Promise.reject(error)   
