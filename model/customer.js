@@ -29,9 +29,12 @@ module.exports = {
         code: _code
       }
       let voucher = await Voucher.findOneCondition(_condition)
-      // console.log(voucher)
+      
+      if (voucher == undefined || voucher.status != 'available')
+        return Promise.resolve('Invalid Voucher Code')
+
       await voucher.update({status: 'used'})
-      // return Promise.resolve(voucher.voucherId)
+      // return Promise.resolve(voucher)
       return Promise.resolve('success')
     } catch (error) {
       return Promise.reject(new Error(error))

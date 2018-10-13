@@ -26,6 +26,18 @@ app.use(express.static('data'));
 
 app.use(jsonParser)
 
+app.post('/signin', (req, res) => {
+  const [_username, _password] = [req.body.username, req.body.password]
+  User.authenticateAccount(_username, _password)
+    .then(result => {
+      res.send({token: result})
+    })
+    .catch(error => {
+      res.sendStatus(404)
+      console.log(error)
+    })
+})
+
 app.post('/register', (req, res) => {
   const [_username, _password, _userType] = [req.body.username, req.body.password, req.body.userType]
   User.insertNewUser(_username, _password, _userType)
@@ -48,6 +60,7 @@ app.get('/user/:id', (req, res) => {
       console.log(error)
     })
 }) 
+
 
 app.post('/customer/:customerId/shop/:shopId/voucher', (req, res) => {
   Customer.createVoucher(req.params.customerId, req.params.shopId)
