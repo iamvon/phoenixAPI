@@ -1,0 +1,462 @@
+{
+    "abi": 
+    [
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": true,
+                    "name": "from",
+                    "type": "address"
+                },
+                {
+                    "indexed": true,
+                    "name": "to",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "name": "pointID",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": false,
+                    "name": "points",
+                    "type": "uint256"
+                }
+            ],
+            "name": "CustomerTransferPointToCustomer",
+            "type": "event"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_shopAddress",
+                    "type": "address"
+                },
+                {
+                    "name": "_pointName",
+                    "type": "string"
+                },
+                {
+                    "name": "_pointSymbol",
+                    "type": "string"
+                },
+                {
+                    "name": "_pointDecimals",
+                    "type": "uint8"
+                },
+                {
+                    "name": "_initialSupply",
+                    "type": "uint256"
+                }
+            ],
+            "name": "createPoint",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_publisher",
+                    "type": "address"
+                },
+                {
+                    "name": "_pointPublisherID",
+                    "type": "uint256"
+                },
+                {
+                    "name": "_pointTraderID",
+                    "type": "uint256"
+                },
+                {
+                    "name": "_pointPublisherAmount",
+                    "type": "uint256"
+                },
+                {
+                    "name": "_pointTraderAmount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "customerSendPointTrading",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "address"
+                },
+                {
+                    "name": "",
+                    "type": "uint256"
+                },
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_to",
+                    "type": "address"
+                },
+                {
+                    "name": "_pointID",
+                    "type": "uint256"
+                },
+                {
+                    "name": "_pointsTransfer",
+                    "type": "uint256"
+                }
+            ],
+            "name": "customerTransferPointToCustomer",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_to",
+                    "type": "address"
+                },
+                {
+                    "name": "_pointID",
+                    "type": "uint256"
+                },
+                {
+                    "name": "_pointsTransfer",
+                    "type": "uint256"
+                }
+            ],
+            "name": "customerTransferPointToShop",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_pointID",
+                    "type": "uint256"
+                },
+                {
+                    "name": "_morePoints",
+                    "type": "uint256"
+                }
+            ],
+            "name": "earnMorePoint",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": true,
+                    "name": "from",
+                    "type": "address"
+                },
+                {
+                    "indexed": true,
+                    "name": "to",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "name": "pointID",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": false,
+                    "name": "points",
+                    "type": "uint256"
+                }
+            ],
+            "name": "CustomerTransferPointToShop",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "name": "pointID",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": false,
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "indexed": false,
+                    "name": "totalSupply",
+                    "type": "uint256"
+                }
+            ],
+            "name": "NewPoint",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": true,
+                    "name": "from",
+                    "type": "address"
+                },
+                {
+                    "indexed": true,
+                    "name": "to",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "name": "pointID",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": false,
+                    "name": "points",
+                    "type": "uint256"
+                }
+            ],
+            "name": "ShopTransferPoint",
+            "type": "event"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_publisher",
+                    "type": "address"
+                },
+                {
+                    "name": "_pointPublisherID",
+                    "type": "uint256"
+                },
+                {
+                    "name": "_pointPublisherAmount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "expiredTrading",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_to",
+                    "type": "address"
+                },
+                {
+                    "name": "_pointID",
+                    "type": "uint256"
+                },
+                {
+                    "name": "_pointsTransfer",
+                    "type": "uint256"
+                }
+            ],
+            "name": "shopTransferPoint",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_trader",
+                    "type": "address"
+                },
+                {
+                    "name": "_publisher",
+                    "type": "address"
+                },
+                {
+                    "name": "_pointPublisherID",
+                    "type": "uint256"
+                },
+                {
+                    "name": "_pointTraderID",
+                    "type": "uint256"
+                },
+                {
+                    "name": "_pointPublisherAmount",
+                    "type": "uint256"
+                },
+                {
+                    "name": "_pointTraderAmount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "traderApproveTrading",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "constructor"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "",
+                    "type": "address"
+                },
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "name": "customerToPoint",
+            "outputs": [
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "symbol",
+                    "type": "string"
+                },
+                {
+                    "name": "currentAmount",
+                    "type": "uint256"
+                },
+                {
+                    "name": "pointID",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "pointCount",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "name": "shopPoints",
+            "outputs": [
+                {
+                    "name": "shopAddress",
+                    "type": "address"
+                },
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "symbol",
+                    "type": "string"
+                },
+                {
+                    "name": "decimals",
+                    "type": "uint8"
+                },
+                {
+                    "name": "totalSupply",
+                    "type": "uint256"
+                },
+                {
+                    "name": "currentAmount",
+                    "type": "uint256"
+                },
+                {
+                    "name": "pointID",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "name": "shopToPoint",
+            "outputs": [
+                {
+                    "name": "shopAddress",
+                    "type": "address"
+                },
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "symbol",
+                    "type": "string"
+                },
+                {
+                    "name": "decimals",
+                    "type": "uint8"
+                },
+                {
+                    "name": "totalSupply",
+                    "type": "uint256"
+                },
+                {
+                    "name": "currentAmount",
+                    "type": "uint256"
+                },
+                {
+                    "name": "pointID",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }
+    ]
+}
