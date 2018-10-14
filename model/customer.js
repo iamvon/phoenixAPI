@@ -137,7 +137,7 @@ module.exports = {
       
       // console.log(trader)
       // console.log(publisher)
-
+      
       await CustomerSMI.traderApproveExchange(
         trader.PublicAddress,           // trader
         publisher.PublicAddress,        // publisher
@@ -145,7 +145,7 @@ module.exports = {
         exchange.wantingPointID,        // pointTraderID
         exchange.availablePointAmount,  // pointPublisherAmount
         exchange.wantingPointAmount,    // pointTraderAmount
-        publisher.PrivateKey
+        trader.PrivateKey
       )      
       
       await Transaction.upload(publisher.userId, trader.userId, exchange.availablePointID, exchange.availablePointAmount)
