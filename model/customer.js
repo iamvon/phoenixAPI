@@ -99,14 +99,17 @@ module.exports = {
       wallet = wallet.filter(x => x.pointID == _aPID)
       if (parseInt(wallet[0].currentAmount) < _aPamt) 
         return Promise.reject(new Error(`Not Enough Point ${_aPID} to exchange`))
-      console.log(132131)
+      // console.log('Before Proposing')
+      // console.log(wallet)
       const transaction = await CustomerSMI.customerSendPointExchange(
         publisher.PublicAddress,
         _aPID, _wPID,
         _aPamt, _wPamt,
         publisher.PrivateKey
       )      
-      console.log(13123213213213)
+      // wallet = await this.getWallet(_publisherId)
+      // console.log(wallet)
+      // console.log('After Proposing')
       const result = await Exchange.insert(_publisherId, _aPID, _aPamt, _wPID, _wPamt)
 
       return Promise.resolve({exchangeId: result, tx_id: transaction.tx_id})
@@ -121,16 +124,20 @@ module.exports = {
       if (exchange == null) return Promise.reject(new Error('Invalid exchangeId'))
       exchange = exchange.dataValues
       if (exchange.isApproved) return Promise.reject(new Error('Cannot approve this exchange requirement anymore'))
-
+      
       let wallet = await this.getWallet(_traderId)      
       wallet = wallet.filter(w => w.pointID == exchange.wantingPointID)            
       if (wallet.length != 1 || parseInt(wallet[0].currentAmount) < exchange.wantingPointAmount)
         return Promise.reject(new Error(`Not enough Point ${exchange.wantingPointID} to approve`))
+            
+      let trader    = await User.findById(_traderId)      
+      trader        = trader.dataValues
+      let publisher = await User.findById(exchange.publisherId)
+      publisher     = publisher.dataValues
       
-      const trader    = (await User.findById(exchange.traderId)).dataValues
-      const publisher = (await User.findById(exchange.publisherId)).dataValues
-      
-      
+      // console.log(trader)
+      // console.log(publisher)
+
       await CustomerSMI.traderApproveExchange(
         trader.PublicAddress,           // trader
         publisher.PublicAddress,        // publisher
@@ -142,11 +149,11 @@ module.exports = {
       )      
       
       await Transaction.upload(publisher.userId, trader.userId, exchange.availablePointID, exchange.availablePointAmount)
-      await Transaction.upload(trader.userId, publisher.userId, exchange.wantingPointID, exchange.wantingPointAmount)
+      await Transaction.upload(trader.userId, publisher.userId, exchange.wantingPointID, exchange.wantingPointAmount)      
+      
+      const result = await Exchange.approve(_traderId, _exchangeId)
 
-      await Exchange.approve(_traderId, _exchangeId)
-
-      return Promise.resolve('success')  
+      return Promise.resolve(result)  
     } catch (error) {
       return Promise.reject(error)
     }
